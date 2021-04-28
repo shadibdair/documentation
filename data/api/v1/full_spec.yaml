@@ -1034,10 +1034,10 @@ components:
           type: array
       type: object
     DashboardReflowType:
-      description: 'Reflow type for a multi-size layout dashboard. Set this only when
-        layout type is ''ordered''.
+      description: 'Reflow type for a **new dashboard layout** dashboard. Set this
+        only when layout type is ''ordered''.
 
-        If set to ''fixed'', the dashboard expect all widgets to have a layout, and
+        If set to ''fixed'', the dashboard expects all widgets to have a layout, and
         if it''s set to ''auto'',
 
         widgets should not have layouts.'
@@ -2460,8 +2460,15 @@ components:
         background_color:
           description: Background color of the group title.
           type: string
+        banner_img:
+          description: URL of image to display as a banner for the group.
+          type: string
         layout_type:
           $ref: '#/components/schemas/WidgetLayoutType'
+        show_title:
+          default: true
+          description: Whether to show the title or not.
+          type: boolean
         title:
           description: Title of the widget.
           type: string
@@ -3156,6 +3163,18 @@ components:
         An image can be a PNG, JPG, or animated GIF. Only available on FREE layout
         dashboards.
       properties:
+        has_background:
+          default: true
+          description: Whether to display a background or not.
+          example: true
+          type: boolean
+        has_border:
+          default: true
+          description: Whether to display a border or not.
+          example: true
+          type: boolean
+        horizontal_align:
+          $ref: '#/components/schemas/WidgetHorizontalAlign'
         margin:
           $ref: '#/components/schemas/WidgetMargin'
         sizing:
@@ -3164,8 +3183,14 @@ components:
           $ref: '#/components/schemas/ImageWidgetDefinitionType'
         url:
           description: URL of the image.
-          example: ''
+          example: https://example.com/image.png
           type: string
+        url_dark_theme:
+          description: URL of the image in dark mode.
+          example: https://example.com/image-dark-mode.png
+          type: string
+        vertical_align:
+          $ref: '#/components/schemas/WidgetVerticalAlign'
       required:
       - type
       - url
@@ -5550,6 +5575,10 @@ components:
         font_size:
           description: Size of the text.
           type: string
+        has_padding:
+          default: true
+          description: Whether to add padding or not.
+          type: boolean
         show_tick:
           description: Whether to show a tick or not.
           type: boolean
@@ -5562,6 +5591,8 @@ components:
           type: string
         type:
           $ref: '#/components/schemas/NoteWidgetDefinitionType'
+        vertical_align:
+          $ref: '#/components/schemas/WidgetVerticalAlign'
       required:
       - type
       - content
@@ -10308,6 +10339,8 @@ components:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         infra_host_top99p:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
+        iot_sum:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
         iot_top99p:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         lambda_function_average:
@@ -10316,9 +10349,19 @@ components:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         logs_ingested_sum:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
+        network_device_top99p:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
         npm_flow_sum:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
+        npm_host_sum:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
         npm_host_top99p:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
+        prof_container_sum:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
+        prof_host_sum:
+          $ref: '#/components/schemas/UsageBillableSummaryBody'
+        prof_host_top99p:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         rum_sum:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
@@ -10991,64 +11034,79 @@ components:
           description: Shows the 99th percentile of all agent hosts over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         apm_azure_app_service_host_top99p:
           description: Shows the 99th percentile of all Azure app services using APM
             over all hours in the current date all organizations.
           format: int64
+          nullable: true
           type: integer
         apm_host_top99p:
           description: Shows the 99th percentile of all distinct APM hosts over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_host_top99p:
           description: Shows the 99th percentile of all AWS hosts over all hours in
             the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_func_count:
           description: Shows the average of the number of functions that executed
             1 or more times each hour in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_invocations_sum:
           description: Shows the sum of all AWS Lambda invocations over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         azure_app_service_top99p:
           description: Shows the 99th percentile of all Azure app services over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         billable_ingested_bytes_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         compliance_container_count_sum:
           description: Shows the sum of compliance containers over all hours in the
             current date for all organizations.
+          format: int64
+          nullable: true
+          type: integer
         compliance_host_count_sum:
           description: Shows the sum of compliance hosts over all hours in the current
             date for all organizations.
           format: int64
+          nullable: true
           type: integer
         container_avg:
           description: Shows the average of all distinct containers over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         container_hwm:
           description: Shows the high-water mark of all distinct containers over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         custom_ts_avg:
           description: Shows the average number of distinct custom metrics over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         date:
           description: The date for the usage.
@@ -11058,82 +11116,98 @@ components:
           description: Shows the high-watermark of all Fargate tasks over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         fargate_tasks_count_hwm:
           description: Shows the average of all Fargate tasks over all hours in the
             current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         gcp_host_top99p:
           description: Shows the 99th percentile of all GCP hosts over all hours in
             the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         heroku_host_top99p:
           description: Shows the 99th percentile of all Heroku dynos over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         incident_management_monthly_active_users_hwm:
           description: Shows the high-water mark of incident management monthly active
             users over all hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         indexed_events_count_sum:
           description: Shows the sum of all log events indexed over all hours in the
             current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         infra_host_top99p:
           description: Shows the 99th percentile of all distinct infrastructure hosts
             over all hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         ingested_events_bytes_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         iot_device_sum:
           description: Shows the sum of all IoT devices over all hours in the current
             date for all organizations.
           format: int64
+          nullable: true
           type: integer
         iot_device_top99p:
           description: Shows the 99th percentile of all IoT devices over all hours
             in the current date all organizations.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_android_sum:
           description: Shows the sum of all mobile RUM Sessions on Android over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_ios_sum:
           description: Shows the sum of all mobile RUM Sessions on iOS over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_sum:
           description: Shows the sum of all mobile RUM Sessions over all hours in
             the current date for all organizations
           format: int64
+          nullable: true
           type: integer
         netflow_indexed_events_count_sum:
           description: Shows the sum of all Network flows indexed over all hours in
             the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         npm_host_top99p:
           description: Shows the 99th percentile of all distinct Networks hosts over
             all hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         opentelemetry_host_top99p:
           description: Shows the 99th percentile of all hosts reported by the Datadog
             exporter for the OpenTelemetry Collector over all hours in the current
             date for all organizations.
           format: int64
+          nullable: true
           type: integer
         orgs:
           description: Organizations associated with a user.
@@ -11144,36 +11218,43 @@ components:
           description: Shows the 99th percentile of all profiled hosts over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         rum_session_count_sum:
           description: Shows the sum of all browser RUM Sessions over all hours in
             the current date for all organizations
           format: int64
+          nullable: true
           type: integer
         rum_total_session_count_sum:
           description: Shows the sum of RUM Sessions (browser and mobile) over all
             hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         synthetics_browser_check_calls_count_sum:
           description: Shows the sum of all Synthetic browser tests over all hours
             in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         synthetics_check_calls_count_sum:
           description: Shows the sum of all Synthetic API tests over all hours in
             the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         trace_search_indexed_events_count_sum:
           description: Shows the sum of all Indexed Spans indexed over all hours in
             the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         twol_ingested_events_bytes_sum:
           description: Shows the sum of all tracing without limits bytes ingested
             over all hours in the current date for all organizations.
           format: int64
+          nullable: true
           type: integer
         vsphere_host_top99p:
           description: Shows the 99th percentile of all vSphere hosts over all hours
@@ -11189,83 +11270,102 @@ components:
           description: Shows the 99th percentile of all agent hosts over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         apm_azure_app_service_host_top99p:
           description: Shows the 99th percentile of all Azure app services using APM
             over all hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         apm_host_top99p:
           description: Shows the 99th percentile of all distinct APM hosts over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         aws_host_top99p:
           description: Shows the 99th percentile of all AWS hosts over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_func_count:
           description: Shows the sum of all AWS Lambda invocations over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_invocations_sum:
           description: Shows the sum of all AWS Lambda invocations over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         azure_app_service_top99p:
           description: Shows the 99th percentile of all Azure app services over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         billable_ingested_bytes_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current date for the given org.
           format: int64
+          nullable: true
           type: integer
         compliance_container_agg_sum:
           description: Shows the sum of all compliance containers over all hours in
             the current date for the given org.
+          format: int64
+          nullable: true
+          type: integer
         compliance_host_agg_sum:
           description: Shows the sum of all compliance hosts over all hours in the
             current date for the given org.
           format: int64
+          nullable: true
           type: integer
         container_avg:
           description: Shows the average of all distinct containers over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         container_hwm:
           description: Shows the high-water mark of all distinct containers over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         custom_ts_avg:
           description: Shows the average number of distinct custom metrics over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         fargate_tasks_count_avg:
           description: The average task count for Fargate.
           format: int64
+          nullable: true
           type: integer
         fargate_tasks_count_hwm:
           description: Shows the high-water mark of all Fargate tasks over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         gcp_host_top99p:
           description: Shows the 99th percentile of all GCP hosts over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         heroku_host_top99p:
           description: Shows the 99th percentile of all Heroku dynos over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         id:
           description: The organization id.
@@ -11274,46 +11374,55 @@ components:
           description: Shows the high-water mark of incident management monthly active
             users over all hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         indexed_events_count_sum:
           description: Shows the sum of all log events indexed over all hours in the
             current date for the given org.
           format: int64
+          nullable: true
           type: integer
         infra_host_top99p:
           description: Shows the 99th percentile of all distinct infrastructure hosts
             over all hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         ingested_events_bytes_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current date for the given org.
           format: int64
+          nullable: true
           type: integer
         iot_device_agg_sum:
           description: Shows the sum of all IoT devices over all hours in the current
             date for the given org.
           format: int64
+          nullable: true
           type: integer
         iot_device_top99p_sum:
           description: Shows the 99th percentile of all IoT devices over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_android_sum:
           description: Shows the sum of all mobile RUM Sessions on Android over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_ios_sum:
           description: Shows the sum of all mobile RUM Sessions on iOS over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_sum:
           description: Shows the sum of all mobile RUM Sessions over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         name:
           description: The organization name.
@@ -11322,22 +11431,26 @@ components:
           description: Shows the sum of all Network flows indexed over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         npm_host_top99p:
           description: Shows the 99th percentile of all distinct Networks hosts over
             all hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         opentelemetry_host_top99p:
           description: Shows the 99th percentile of all hosts reported by the Datadog
             exporter for the OpenTelemetry Collector over all hours in the current
             date for the given org.
           format: int64
+          nullable: true
           type: integer
         profiling_host_top99p:
           description: Shows the 99th percentile of all profiled hosts over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         public_id:
           description: The organization public id.
@@ -11346,36 +11459,43 @@ components:
           description: Shows the sum of all browser RUM Sessions over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         rum_total_session_count_sum:
           description: Shows the sum of RUM Sessions (browser and mobile) over all
             hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         synthetics_browser_check_calls_count_sum:
           description: Shows the sum of all Synthetic browser tests over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         synthetics_check_calls_count_sum:
           description: Shows the sum of all Synthetic API tests over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         trace_search_indexed_events_count_sum:
           description: Shows the sum of all Indexed Spans indexed over all hours in
             the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         twol_ingested_events_bytes_sum:
           description: Shows the sum of all tracing without limits bytes ingested
             over all hours in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
         vsphere_host_top99p:
           description: Shows the 99th percentile of all vSphere hosts over all hours
             in the current date for the given org.
           format: int64
+          nullable: true
           type: integer
       type: object
     UsageSummaryResponse:
@@ -11385,69 +11505,85 @@ components:
           description: Shows the 99th percentile of all agent hosts over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         apm_azure_app_service_host_top99p_sum:
           description: Shows the 99th percentile of all Azure app services using APM
             over all hours in the current months all organizations.
           format: int64
+          nullable: true
           type: integer
         apm_host_top99p_sum:
           description: Shows the 99th percentile of all distinct APM hosts over all
             hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_host_top99p_sum:
           description: Shows the 99th percentile of all AWS hosts over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_func_count:
           description: Shows the average of the number of functions that executed
             1 or more times each hour in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         aws_lambda_invocations_sum:
           description: Shows the sum of all AWS Lambda invocations over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         azure_app_service_top99p_sum:
           description: Shows the 99th percentile of all Azure app services over all
             hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         azure_host_top99p_sum:
           description: Shows the 99th percentile of all Azure hosts over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         billable_ingested_bytes_agg_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         compliance_container_agg_sum:
           description: Shows the sum of all compliance containers over all hours in
             the current months for all organizations.
+          format: int64
+          nullable: true
+          type: integer
         compliance_host_agg_sum:
           description: Shows the sum of all compliance hosts over all hours in the
             current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         container_avg_sum:
           description: Shows the average of all distinct containers over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         container_hwm_sum:
           description: Shows the sum of the high-water marks of all distinct containers
             over all hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         custom_ts_sum:
           description: Shows the average number of distinct custom metrics over all
             hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         end_date:
           description: Shows the last date of usage in the current months for all
@@ -11458,51 +11594,61 @@ components:
           description: Shows the average of all Fargate tasks over all hours in the
             current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         fargate_tasks_count_hwm_sum:
           description: Shows the sum of the high-water marks of all Fargate tasks
             over all hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         gcp_host_top99p_sum:
           description: Shows the 99th percentile of all GCP hosts over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         heroku_host_top99p_sum:
           description: Shows the 99th percentile of all Heroku dynos over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         incident_management_monthly_active_users_hwm_sum:
           description: Shows sum of the the high-water marks of incident management
             monthly active users in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         indexed_events_count_agg_sum:
           description: Shows the sum of all log events indexed over all hours in the
             current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         infra_host_top99p_sum:
           description: Shows the 99th percentile of all distinct infrastructure hosts
             over all hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         ingested_events_bytes_agg_sum:
           description: Shows the sum of all log bytes ingested over all hours in the
             current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         iot_device_agg_sum:
           description: Shows the sum of all IoT devices over all hours in the current
             months for all organizations.
           format: int64
+          nullable: true
           type: integer
         iot_device_top99p_sum:
           description: Shows the 99th percentile of all IoT devices over all hours
             in the current months of all organizations.
           format: int64
+          nullable: true
           type: integer
         last_updated:
           description: Shows the the most recent hour in the current months for all
@@ -11514,75 +11660,89 @@ components:
             current months for all organizations (data available as of December 1,
             2020).
           format: int64
+          nullable: true
           type: integer
         live_ingested_bytes_agg_sum:
           description: Shows the sum of all live logs bytes ingested over all hours
             in the current months for all organizations (data available as of December
             1, 2020).
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_agg_sum:
           description: Shows the sum of all mobile RUM Sessions over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_android_agg_sum:
           description: Shows the sum of all mobile RUM Sessions on Android over all
             hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         mobile_rum_session_count_ios_agg_sum:
           description: Shows the sum of all mobile RUM Sessions on iOS over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         netflow_indexed_events_count_agg_sum:
           description: Shows the sum of all Network flows indexed over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         npm_host_top99p_sum:
           description: Shows the 99th percentile of all distinct Networks hosts over
             all hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         opentelemetry_host_top99p_sum:
           description: Shows the 99th percentile of all hosts reported by the Datadog
             exporter for the OpenTelemetry Collector over all hours in the current
             months for all organizations.
           format: int64
+          nullable: true
           type: integer
         profiling_container_agent_count_avg:
           description: Shows the average number of profiled containers over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         profiling_host_count_top99p_sum:
           description: Shows the 99th percentile of all profiled hosts over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         rehydrated_indexed_events_agg_sum:
           description: Shows the sum of all rehydrated logs indexed over all hours
             in the current months for all organizations (data available as of December
             1, 2020).
           format: int64
+          nullable: true
           type: integer
         rehydrated_ingested_bytes_agg_sum:
           description: Shows the sum of all rehydrated logs bytes ingested over all
             hours in the current months for all organizations (data available as of
             December 1, 2020).
           format: int64
+          nullable: true
           type: integer
         rum_session_count_agg_sum:
           description: Shows the sum of all browser RUM Sessions over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         rum_total_session_count_agg_sum:
           description: Shows the sum of RUM Sessions (browser and mobile) over all
             hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         start_date:
           description: Shows the first date of usage in the current months for all
@@ -11593,21 +11753,25 @@ components:
           description: Shows the sum of all Synthetic browser tests over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         synthetics_check_calls_count_agg_sum:
           description: Shows the sum of all Synthetic API tests over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         trace_search_indexed_events_count_agg_sum:
           description: Shows the sum of all Indexed Spans indexed over all hours in
             the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         twol_ingested_events_bytes_agg_sum:
           description: Shows the sum of all tracing without limits bytes ingested
             over all hours in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
         usage:
           description: An array of objects regarding hourly usage.
@@ -11618,6 +11782,7 @@ components:
           description: Shows the 99th percentile of all vSphere hosts over all hours
             in the current months for all organizations.
           format: int64
+          nullable: true
           type: integer
       type: object
     UsageSyntheticsAPIHour:
@@ -11994,11 +12159,11 @@ components:
           type: string
       type: object
     Widget:
-      description: 'Information about widget.
-
-
-        Note: The `layout` property is required for widgets in dashboards with `free`
-        `layout_type` only.'
+      description: "Information about widget.\n\n**Note**: The `layout` property is\
+        \ required for widgets in dashboards with `free` `layout_type`.\n      For\
+        \ the **new dashboard layout**, the `layout` property depends on the `reflow_type`\
+        \ of the dashboard.\n      - If `reflow_type` is `fixed`, `layout` is required.\n\
+        \      - If `reflow_type` is `auto`, `layout` should not be set."
       properties:
         definition:
           $ref: '#/components/schemas/WidgetDefinition'
@@ -12263,19 +12428,44 @@ components:
       x-enum-varnames:
       - CHECK
       - CLUSTER
-    WidgetImageSizing:
-      description: How to size the image on the widget.
+    WidgetHorizontalAlign:
+      description: Horizontal alignment.
       enum:
+      - center
+      - left
+      - right
+      type: string
+      x-enum-varnames:
+      - CENTER
+      - LEFT
+      - RIGHT
+    WidgetImageSizing:
+      description: 'How to size the image on the widget. The values are based on the
+        image `object-fit` CSS properties.
+
+        **Note**: `zoom`, `fit` and `center` values are deprecated.'
+      enum:
+      - fill
+      - contain
+      - cover
+      - none
+      - scale-down
       - zoom
       - fit
       - center
       type: string
       x-enum-varnames:
+      - FILL
+      - CONTAIN
+      - COVER
+      - NONE
+      - SCALEDOWN
       - ZOOM
       - FIT
       - CENTER
     WidgetLayout:
-      description: The layout for a widget on a free dashboard.
+      description: The layout for a widget on a `free` or **new dashboard layout**
+        dashboard.
       properties:
         height:
           description: The height of the widget. Should be a non-negative integer.
@@ -12283,6 +12473,14 @@ components:
           format: int64
           minimum: 0
           type: integer
+        is_column_break:
+          default: false
+          description: 'Whether the widget should be the first one on the second column
+            in high density or not.
+
+            **Note**: Only for the **new dashboard layout** and only one widget in
+            the dashboard should have this property set to `true`.'
+          type: boolean
         width:
           description: The width of the widget. Should be a non-negative integer.
           example: 0
@@ -12378,12 +12576,20 @@ components:
       - PAST_ONE_YEAR
       - ALERT
     WidgetMargin:
-      description: Size of the margins around the image.
+      description: 'Size of the margins around the image.
+
+        **Note**: `small` and `large` values are deprecated.'
       enum:
+      - sm
+      - md
+      - lg
       - small
       - large
       type: string
       x-enum-varnames:
+      - SM
+      - MD
+      - LG
       - SMALL
       - LARGE
     WidgetMarker:
@@ -12643,6 +12849,17 @@ components:
       - MONTH_TO_DATE
       - PREVIOUS_MONTH
       - GLOBAL_TIME
+    WidgetVerticalAlign:
+      description: Vertical alignment.
+      enum:
+      - center
+      - top
+      - bottom
+      type: string
+      x-enum-varnames:
+      - CENTER
+      - TOP
+      - BOTTOM
     WidgetViewMode:
       description: Define how you want the SLO to be displayed.
       enum:
@@ -14263,7 +14480,8 @@ paths:
         `,`n` in your output.\n\n- This endpoint returns a maximum of `1000` most\
         \ recent results. To return additional results,\nidentify the last timestamp\
         \ of the last result and set that as the `end` query time to\npaginate the\
-        \ results."
+        \ results. You can also use the page parameter to specify which set of `1000`\
+        \ results to return."
       operationId: ListEvents
       parameters:
       - description: POSIX timestamp.
@@ -14305,12 +14523,36 @@ paths:
           Otherwise if an event is aggregated to a parent event with a timestamp outside
           of the timeframe,
 
-          it won''t be available in the output.'
+          it won''t be available in the output. Aggregated events with `is_aggregate=true`
+          in the response will still be returned unless exclude_aggregate is set to
+          `true.`'
         in: query
         name: unaggregated
         required: false
         schema:
           type: boolean
+      - description: 'Set `exclude_aggregate` to `true` to only return unaggregated
+          events where `is_aggregate=false` in the response. If the `exclude_aggregate`
+          parameter is set to `true`,
+
+          then the unaggregated parameter is ignored and will be `true` by default.'
+        in: query
+        name: exclude_aggregate
+        required: false
+        schema:
+          type: boolean
+      - description: 'By default 1000 results are returned per request. Set page to
+          the number of the page to return with `0` being the first page. The page
+          parameter can only be used
+
+          when either unaggregated or exclude_aggregate is set to `true.`'
+        in: query
+        name: page
+        required: false
+        schema:
+          format: int32
+          maximum: 2147483647
+          type: integer
       responses:
         '200':
           content:
