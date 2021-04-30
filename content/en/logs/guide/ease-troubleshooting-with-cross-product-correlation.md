@@ -18,26 +18,34 @@ further_reading:
 
 ## Overview
 
-With [unified service tagging][1] you already have high level correlation capabilities. But sometimes the starting point of your investigation is a single log, trace or view. Correlating them with other data gives context to estimate business impact and find root causes in a few clicks.
+With [unified service tagging][1] you already have high level correlation capabilities. But sometimes the starting point of your investigation is a single log, trace, view or Synthetic test. Correlating them with other data gives context to estimate business impact and find root causes in a few clicks.
 
 {{< img src="logs/guide/ease-troubleshooting-with-cross-product-correlation/full-stack-cover.png" alt="Full stack correlation" style="width:80%;" >}}
 
-Correlating your logs also eases [aggressive sampling strategy without losing entity-level consistency][2] with attributes like `trace_id` and `session_id`.
+This guide walks you through the steps you should take to correlate your full stack data:
 
-This guide walks you through the steps you should take to correlate your full stack logs, traces and view.
-
-At first, [correlating application logs](#correlate-application-logs) offers extensive visibility across your stack, but some very specific use-cases require to prolong the correlation deeper to your stack:
-
-1. [Correlate proxy logs](#correlate-proxy-logs)
-2. [Correlate database logs](#correlate-database-logs)
-3. [Correlate RUM views](#correlate-rum-views)
-4. [Correlate browser logs](#correlate-browser-logs)
-
-At last, [leverage the correlation to troubleshoot Synthetic tests](#leverage-the-correlation-to-troubleshoot-synthetic-tests).
+1. [Correlate server-side logs with traces](#correlate-server-side-logs-with-traces)
+   * [Correlate application logs](#correlate-application-logs)
+   * [Correlate proxy logs](#correlate-proxy-logs)
+   * [Correlate database logs](#correlate-database-logs)
+2. [Correlate frontend products](#correlate-frontend-products)
+   * [Correlate browser logs with RUM](#correlate-browser-logs-with-rum)
+3. [Correlate user experience with server behavior](#correlate-user-experience-with-server-behavior)
+   * [Correlate RUM views with traces](#correlate-rum-views-with-traces)
+   * [Leverage the trace correlation to troubleshoot Synthetic tests](#leverage-the-trace-correlation-to-troubleshoot-synthetic-tests)
 
 Note: Depending on your use cases, you may skip steps. Steps dependant from others are explicit.
 
 ## Correlate server-side logs with traces
+
+When your users are encountering errors or high latency in your application, drilling down to view the logs from a problematic request can reveal exactly what went wrong. By pulling together all the logs pertaining to a given request, you can see in rich detail how it was handled from beginning to end so you can quickly diagnose the issue.
+
+Correlating your logs also eases [aggressive sampling strategy without losing entity-level consistency][2] with attributes like `trace_id` and `session_id`.
+
+At first, [correlating application logs](#correlate-application-logs) offers extensive visibility across your stack, but some very specific use-cases require to prolong the correlation deeper to your stack:
+
+* [Correlate proxy logs](#correlate-proxy-logs)
+* [Correlate database logs](#correlate-database-logs)
 
 ### Correlate application logs
 
@@ -165,7 +173,7 @@ You can see slow query execution plan from your slow trace:
 [1]: /integrations/postgres/?tab=host#log-collection
 [2]: https://www.postgresql.org/docs/13/auto-explain.html
 [3]: https://www.postgresql.org/docs/13/sql-syntax-lexical.html#SQL-SYNTAX-COMMENTS
-[4]:/logs/processing/processors/?tab=ui#grok-parser
+[4]: /logs/processing/processors/?tab=ui#grok-parser
 [5]: /logs/processing/processors/?tab=ui#trace-remapper
 {{% /tab %}}
 {{< /tabs >}}
@@ -185,6 +193,13 @@ You can see slow query execution plan from your slow trace:
 Browser logs and RUM events are automatically correlated as explained in the [RUM billing FAQ][10]. You just need to have [matching configuration between RUM and logs SDK][11].
 
 ## Correlate user experience with server behavior
+
+Traditional backend and frontend monitoring are siloed and require separate workflows to troubleshoot across the stack. Datadog full-stack correlations allow you to identify root cause in a quick and intuitive manner (whether it comes from a browser issue or a database downtime) and quickly estimate user impact of any server-side failure.
+
+This section walks you through the steps you should take to enable such correlations:
+
+* [Correlate RUM views with traces](#correlate-rum-views-with-traces)
+* [Leverage the trace correlation to troubleshoot Synthetic tests](#leverage-the-trace-correlation-to-troubleshoot-synthetic-tests).
 
 ### Correlate RUM views with traces
 
