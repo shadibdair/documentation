@@ -1,0 +1,9 @@
+extends: existence
+message: "'%s' may violate our inclusive language guidelines."
+level: warning
+ignorecase: true
+tokens:
+  - master
+  - slave
+  - whitelist
+  - blacklist
