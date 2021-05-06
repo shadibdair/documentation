@@ -356,14 +356,14 @@
               tag: "Homepage"
               text: "Explore Datadog RUM"
     - action: pull-and-push-file
-      branch: master
+      branch: kari/docs-tables-work
       globs:
       - 'docs/configure_rum_android_sdk.md'
       options:
         dest_path: '/real_user_monitoring/android/'
         file_name: 'advanced_configuration.md'
         front_matters:
-          dependencies: ["https://github.com/DataDog/dd-sdk-android/blob/master/docs/configure_rum_android_sdk.md"]
+          dependencies: ["https://github.com/DataDog/dd-sdk-android/blob/kari/docs-tables-work/docs/configure_rum_android_sdk.md"]
           title: RUM Android Advanced Configuration
           kind: documentation
           further_reading:
