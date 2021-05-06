@@ -192,14 +192,14 @@
   - repo_name: datadog-serverless-functions
     contents:
     - action: pull-and-push-file
-      branch: master
+      branch: kari/docs-tables-structure
       globs:
       - 'aws/logs_monitoring/README.md'
       options:
         dest_path: '/serverless/'
         file_name: 'forwarder.md'
         front_matters:
-          dependencies: ["https://github.com/DataDog/datadog-serverless-functions/blob/master/aws/logs_monitoring/README.md"]
+          dependencies: ["https://github.com/DataDog/datadog-serverless-functions/blob/kari/docs-tables-structure/aws/logs_monitoring/README.md"]
           title: Datadog Forwarder
           kind: documentation
           aliases:
