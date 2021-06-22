@@ -123,7 +123,9 @@ The following table presents the list of collected resources and the minimal Age
 | Resource | Minimal Agent version | Minimal Cluster Agent version | Minimal Helm chart version |
 |---|---|---|---|
 | Clusters | 7.27.0 | 1.12.0 | 2.10.0 |
+| CronJobs | 7.27.0 | 1.13.0 | 2.15.5 |
 | Deployments | 7.27.0 | 1.11.0 | 2.10.0 |
+| Jobs | 7.27.0 | 1.13.0 | 2.15.5 |
 | Nodes | 7.27.0 | 1.11.0 | 2.10.0 |
 | Pods | 7.27.0 | 1.11.0 | 2.10.0 |
 | ReplicaSets | 7.27.0 | 1.11.0 | 2.10.0 |
