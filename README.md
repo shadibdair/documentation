@@ -1,4 +1,4 @@
-# Documentation site for Datadog
+# Documentation site for Datadog !
 
 Built with [hugo][1], a static website generation tool.
 
